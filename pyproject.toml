@@ -8,6 +8,8 @@ authors = ["Arkadiy Sotnikov  <arkadiy.sotnikov@burtcorp.com>"]
 python = "^3.9"
 jupyter = "^1.0.0"
 pandas = "^1.5.0"
+openpyxl = "^3.0.10"
+geopandas = "^0.11.1"
 
 [tool.poetry.dev-dependencies]
 jupyter = "^1.0.0"
