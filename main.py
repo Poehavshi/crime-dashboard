@@ -1,9 +1,13 @@
+import hydra
+from omegaconf import DictConfig
+
+from src.extract import download
 
 
-def print_hi(name):
-    print(f'Hi, {name}')
+@hydra.main(config_path="./conf", config_name="prod", version_base=None)
+def main(config: DictConfig):
+    download(config)
 
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    main()

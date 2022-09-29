@@ -1,0 +1,6 @@
+data_source:
+  climate: ["https://query.data.world/s/euo44nk2cizrjavkfqtogk7eiwwv4u", "https://query.data.world/s/epcm3iauwcborpfhda7en6yeqdgsux", "http://cecgis-caenergy.opendata.arcgis.com/datasets/549017ee96e341d2bbb3dd0c291a9112_0.geojson"]
+  crime: ["https://query.data.world/s/ba5mxc3usfabmquytf3uuo7oruwkev.xlsx"]
+  housing: ["https://files.zillowstatic.com/research/public_csvs/zhvi/Metro_zhvi_uc_sfrcondo_tier_0.33_0.67_sm_sa_month.csv?t=1664451572", "https://files.zillowstatic.com/research/public_csvs/zhvi/Metro_zhvi_uc_sfrcondo_tier_0.33_0.67_month.csv?t=1664451572"]
+
+cache_path: "./data/raw_data/"
