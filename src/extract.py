@@ -1,5 +1,4 @@
 import os
-from torchvision.datasets.utils import download_url
 
 import hydra
 import requests
