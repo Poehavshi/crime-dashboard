@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from extract_functions import download_climate, show_climate_data
+from extract_functions import extract_climate, show_climate_data
 
 
 # default arguments
@@ -31,7 +31,7 @@ dag_climate = DAG('climate',
 
 t1 = PythonOperator(
     task_id='download_file',
-    python_callable=download_climate,
+    python_callable=extract_climate,
     provide_context=True,
     dag=dag_climate
 )
