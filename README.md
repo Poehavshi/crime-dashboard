@@ -17,3 +17,15 @@ Some common use cases to analyse with this project:
 - Climate [[Global climate Change Data 2016](https://data.world/data-society/global-climate-change-data)] [[California climate zones](https://data.amerigeoss.org/dataset/california-building-climate-zones)]
 - Housing data [[Zillow home values index](https://www.zillow.com/research/data/)]
 - Maybe some additional data scraped from websites in future
+
+## How to run
+
+The only one to launch whole project is docker-compose, so to run project you need:
+
+1 Build all images for docker-compose:
+
+`docker-compose build`
+
+2 Run project
+
+`docker-compose up`
