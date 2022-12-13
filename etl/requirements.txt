@@ -1,3 +1,4 @@
 xmltodict
 sqlalchemy
 openpyxl
+apache-airflow-providers-apache-spark

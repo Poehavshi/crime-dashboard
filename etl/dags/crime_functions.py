@@ -1,6 +1,11 @@
 import requests
 import logging
 import pandas as pd
+import pyspark
+from pyspark import SparkConf
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import col
+from pyspark.sql.types import IntegerType
 from airflow.hooks.postgres_hook import PostgresHook
 
 DATA_SOURCES = {
@@ -19,9 +24,22 @@ def extract_crime():
             logging.critical(f"ERROR when download climate data: {e}")
 
 
+def convert_crime_to_csv():
+    data_excel_crime = pd.read_excel("crime_data.xlsx", sheet_name='ViolentCrime')
+    data_excel_crime = data_excel_crime.drop(['ind_definition', 'strata_name', 'version'], axis=1)
+    data_excel_crime.to_csv("crime_data.csv")
+
+
 def transform_crime():
-    crime_data = pd.read_excel("crime_data.xlsx")
-    print(crime_data)
+    spark = SparkSession \
+        .builder \
+        .master("local") \
+        .appName("crimeData") \
+        .getOrCreate()
+    crime_data = spark.read.csv("crime_data.csv", header=True)
+    crime_data.select(col("reportyear").cast(IntegerType()))
+
+    print(spark.sparkContext.getConf().getAll())
 
 
 def load_crime():
