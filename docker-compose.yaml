@@ -5,8 +5,8 @@ x-airflow-common:
   # In order to add custom dependencies or upgrade provider packages you can use your extended image.
   # Comment the image line, place your Dockerfile in the directory where you placed the docker-compose.yaml
   # and uncomment the "build" line below, Then run `docker-compose build` to build the images.
-  image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.4.3}
-  build: ./airflow/
+  # image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.4.3}
+  build: ./etl/
   environment:
     &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
@@ -238,14 +238,12 @@ services:
       - 5555:5432
     environment:
       - POSTGRES_USER=postgres # CHANGE THIS TO ENVIRONMENT VARIABLES IN A PRODUCTION ENVIRONMENT!
-      - POSTGRES_DB=climate
+      - POSTGRES_DB=crime
       - POSTGRES_PASSWORD=postgres
-      # - POSTGRES_USER=${POSTGRES_USER}
-      # - POSTGRES_DB=${POSTGRES_DB}
-      # - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    volumes:
-      - climate_data:/var/lib/postgresql/data # Persist database state
+
+#    volumes:
+#      - crime_data:/var/lib/postgresql/data # Persist database state
 
 volumes:
   postgres-db-volume:
-  climate_data:
+  # crime_data:

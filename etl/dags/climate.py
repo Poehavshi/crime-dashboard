@@ -7,7 +7,9 @@ from datetime import datetime, timedelta
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from climate_functions import extract_climate, transform_climate, load_climate
+from climate_functions import extract_climate, transform_climate, load_climate, drop_old_table, create_climate_table
+from merging_functions import merge_crime_and_climate
+from crime_functions import extract_crime, transform_crime, load_crime
 
 
 # default arguments
@@ -29,26 +31,76 @@ dag_climate = DAG('climate',
                   default_args=default_args)
 
 
-t1 = PythonOperator(
+t11 = PythonOperator(
     task_id='download_file',
     python_callable=extract_climate,
     provide_context=True,
     dag=dag_climate
 )
 
-t2 = PythonOperator(
+t21 = PythonOperator(
     task_id='transform_climate',
     python_callable=transform_climate,
     provide_context=True,
     dag=dag_climate
 )
 
-t3 = PythonOperator(
+t31 = PythonOperator(
+    task_id='drop_old',
+    python_callable=drop_old_table,
+    provide_context=True,
+    dag=dag_climate
+)
+
+
+t41 = PythonOperator(
+    task_id='create_new',
+    python_callable=create_climate_table,
+    provide_context=True,
+    dag=dag_climate
+)
+
+t51 = PythonOperator(
     task_id='load_climate',
     python_callable=load_climate,
     provide_context=True,
     dag=dag_climate
 )
 
-t1 >> t2
-t2 >> t3
+t12 = PythonOperator(
+    task_id="extract_crime",
+    python_callable=extract_crime,
+    provide_context=True,
+    dag=dag_climate
+)
+
+t22 = PythonOperator(
+    task_id="transform_crime",
+    python_callable=transform_crime,
+    provide_context=True,
+    dag=dag_climate
+)
+
+t32 = PythonOperator(
+    task_id="load_crime",
+    python_callable=load_crime,
+    provide_context=True,
+    dag=dag_climate
+)
+
+t6 = PythonOperator(
+    task_id="merge",
+    python_callable=merge_crime_and_climate,
+    provide_context=True,
+    dag=dag_climate
+)
+
+t11 >> t21
+t21 >> t31
+t31 >> t41
+t41 >> t51
+t51 >> t6
+
+t12 >> t22
+t22 >> t32
+t32 >> t6

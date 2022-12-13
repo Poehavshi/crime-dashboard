@@ -1,0 +1,1 @@
+CLIMATE_TABLE_NAME = "climate"
