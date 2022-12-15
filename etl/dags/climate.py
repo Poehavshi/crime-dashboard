@@ -9,7 +9,7 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from climate_functions import extract_climate, transform_climate, load_climate, drop_old_table, create_climate_table
 from merging_functions import merge_crime_and_climate
-from crime_functions import extract_crime, convert_crime_to_csv, load_crime, transform_crime
+from crime_functions import extract_crime, convert_crime_to_csv, load_crime, transform_crime, drop_old_crime_table, create_crime_table
 
 
 # default arguments
@@ -89,25 +89,44 @@ t32 = PythonOperator(
 )
 
 t42 = PythonOperator(
+    task_id="drop_table_crime",
+    python_callable=drop_old_crime_table,
+    provide_context=True,
+    dag=dag_climate
+)
+
+t52 = PythonOperator(
+    task_id="create_crime_table",
+    python_callable=create_crime_table,
+    provide_context=True,
+    dag=dag_climate
+)
+
+t62 = PythonOperator(
     task_id="load_crime",
     python_callable=load_crime,
     provide_context=True,
     dag=dag_climate
 )
 
-t6 = PythonOperator(
+t7 = PythonOperator(
     task_id="merge",
     python_callable=merge_crime_and_climate,
     provide_context=True,
     dag=dag_climate
 )
 
+
+
 t11 >> t21
 t21 >> t31
 t31 >> t41
 t41 >> t51
-t51 >> t6
+t51 >> t7
 
 t12 >> t22
 t22 >> t32
-t32 >> t6
+t32 >> t42
+t42 >> t52
+t52 >> t62
+t62 >> t7

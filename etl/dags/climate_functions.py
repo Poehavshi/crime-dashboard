@@ -3,6 +3,7 @@ import logging
 import pandas as pd
 from airflow.hooks.postgres_hook import PostgresHook
 from config import CLIMATE_TABLE_NAME
+from utils import download
 
 DATA_SOURCES = {
     "climate_by_country.csv": "https://query.data.world/s/euo44nk2cizrjavkfqtogk7eiwwv4u",
@@ -13,13 +14,7 @@ DATA_SOURCES = {
 
 def extract_climate():
     for filename, url in DATA_SOURCES.items():
-        try:
-            response = requests.get(url)
-            with open(filename, "wb") as file:
-                file.write(response.content)
-                logging.info(f"Create {filename} file")
-        except requests.exceptions.RequestException as e:
-            logging.critical(f"ERROR when download climate data: {e}")
+        download(filename, url)
 
 
 def transform_climate():
@@ -36,7 +31,7 @@ def transform_climate():
 def drop_old_table():
     with PostgresHook("climate").get_conn() as conn:
         cur = conn.cursor()
-        cur.execute("DROP TABLE IF EXISTS climate")
+        cur.execute(f"DROP TABLE IF EXISTS {CLIMATE_TABLE_NAME}")
 
 
 def create_climate_table():
