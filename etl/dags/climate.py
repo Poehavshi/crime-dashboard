@@ -7,10 +7,12 @@ from datetime import datetime, timedelta
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
+from airflow.providers.postgres.operators.postgres import PostgresOperator
 from climate_functions import extract_climate, transform_climate, load_climate, drop_old_table, create_climate_table
 from merging_functions import merge_crime_and_climate
 from crime_functions import extract_crime, convert_crime_to_csv, load_crime, transform_crime, drop_old_crime_table, create_crime_table
-from housing_functions import extract_housing, transform_housing, load_housing, drop_old_housing_table, create_housing_table
+from housing_functions import extract_housing, transform_housing, load_housing, drop_old_housing_table, \
+    create_housing_table, health_check
 
 # default arguments
 default_args = {
@@ -145,10 +147,11 @@ t53 = PythonOperator(
     dag=dag_climate
 )
 
-t7 = PythonOperator(
-    task_id="merge",
-    python_callable=merge_crime_and_climate,
-    provide_context=True,
+
+t7 = PostgresOperator(
+    task_id="health_check",
+    postgres_conn_id="climate",
+    sql="SELECT * FROM housing",
     dag=dag_climate
 )
 
@@ -160,12 +163,14 @@ t31 >> t41
 t41 >> t51
 t51 >> t7
 
+
 t12 >> t22
 t22 >> t32
 t32 >> t42
 t42 >> t52
 t52 >> t62
 t62 >> t7
+
 
 t13 >> t23
 t23 >> t33

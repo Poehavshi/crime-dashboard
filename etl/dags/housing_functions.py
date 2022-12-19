@@ -77,3 +77,9 @@ def create_housing_table():
         cursor.execute(request)
         conn.commit()
 
+
+def health_check():
+    with PostgresHook("climate").get_conn() as conn:
+        request = f"SELECT * FROM {HOUSING_TABLE_NAME};"
+        cursor = conn.cursor()
+        print(cursor.execute(request).fetchall())

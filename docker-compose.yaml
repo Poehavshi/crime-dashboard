@@ -240,8 +240,8 @@ services:
       - POSTGRES_USER=postgres # CHANGE THIS TO ENVIRONMENT VARIABLES IN A PRODUCTION ENVIRONMENT!
       - POSTGRES_DB=crime
       - POSTGRES_PASSWORD=postgres
-#    volumes:
-#      - crime_data:/var/lib/postgresql/data # Persist database state
+    volumes:
+      - crime_data:/var/lib/postgresql/data # Persist database state
 
   spark:
     image: docker.io/bitnami/spark:3
@@ -281,7 +281,17 @@ services:
       - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
       - SPARK_SSL_ENABLED=no
 
+  streamlit:
+    container_name: streamlit
+    build: ./streamlit/
+    volumes:
+      - ./streamlit/:/app
+    ports:
+      - 8501:8501
+    depends_on:
+      - postgres_streams
+
 
 volumes:
   postgres-db-volume:
-  # crime_data:
+  crime_data:
