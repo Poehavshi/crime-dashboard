@@ -10,3 +10,4 @@ def download(filename, url):
             logging.info(f"Create {filename} file")
     except requests.exceptions.RequestException as e:
         logging.critical(f"ERROR when download data: {e}")
+
